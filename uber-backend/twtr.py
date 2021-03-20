@@ -94,7 +94,7 @@ def update_one(r):
                 {"_id" : r['_id']},
                 {"$set": r},
                 upsert=True)
-            printg ("...update_one() to mongo acknowledged:", result.modified_count)
+            print("...update_one() to mongo acknowledged:", result.modified_count)
         except Exception as e:
             print(e)
 

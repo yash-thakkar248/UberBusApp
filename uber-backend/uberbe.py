@@ -86,6 +86,51 @@ def insert_booking(r):
     microseconds_doing_mongo_work = (datetime.now() - start_time).microseconds
     print("*** It took " + str(microseconds_doing_mongo_work) + " microseconds to insert_one.")
 
+def updateSignIn(r):
+    start_time = datetime.now()
+    with mongo_client:
+        #start_time_db = datetime.now()
+        db = mongo_client['uberdb']
+        #microseconds_caching_db = (datetime.now() - start_time_db).microseconds
+        #print("*** It took " + str(microseconds_caching_db) + " microseconds to cache mongo handle.")
+
+        print("...updateSignIn() to mongo: ", r)
+        try:
+            mongo_collection = db['user']
+            result = mongo_collection.update_one(
+                {"username" : r['username']},
+                {"$set": r},
+                upsert=True)
+            print("...update_one() to mongo acknowledged:", result.modified_count)
+        except Exception as e:
+            print(e)
+
+    microseconds_doing_mongo_work = (datetime.now() - start_time).microseconds
+    print("*** It took " + str(microseconds_doing_mongo_work) + " microseconds to update_one.")
+
+
+# endpoint to sign in the user
+@app.route("/userSignIn", methods=["POST"])
+def sign_user_in():
+    username = request.json['username']
+    password = request.json['password']
+    
+    # validate correct user or not
+    userCheck  = checkUserPresent("username",username)
+    print('User present or not:::')
+    print(userCheck)
+    # check user sign in or not
+    checkAlreadySignORNot = checkUserSignIn("username",username)
+    print(checkAlreadySignORNot)
+    if checkAlreadySignORNot==1:
+        user = dict(username=username,signIn=True)
+        print(user)
+        updateSignIn(user)
+        return jsonify(user)
+    elif checkAlreadySignORNot==0:
+        return jsonify('User already Sign In')
+    else:
+        return jsonify('Invalid User')
 
 # endpoint to create new user
 @app.route("/insertUser", methods=["POST"])
@@ -106,7 +151,9 @@ def add_user():
         insert_user(user)
         return jsonify(user)
     else:
-        return 'User already Present'
+        return jsonify('User already Present')
+
+
 
 @app.route('/find-one/<argument>/<value>/', methods=['GET']) 
 def checkUserSignIn(argument, value):
@@ -114,10 +161,12 @@ def checkUserSignIn(argument, value):
     User = Database.user
     queryObject = {argument: value} 
     query = User.find_one(queryObject,{"signIn":1}) 
-    
-    print(query.pop('_id'))
+    if query:
+        query.pop('_id')
+        return query['signIn']
+    else:
+        return 0
 
-    return jsonify(query)
 
 
 @app.route('/usercheck/<argument>/<value>/', methods=['GET']) 
@@ -127,6 +176,7 @@ def checkUserPresent(argument, value):
     #query = User.find_one(queryObject,{"username":1}) 
     query = User.find({argument: { "$in": [value]}}).count()
     return jsonify(query)
+
 
 
 # endpoint to create new user
