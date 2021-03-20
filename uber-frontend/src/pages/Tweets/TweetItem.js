@@ -4,10 +4,9 @@ import { View, Image, Text, StyleSheet } from "react-native";
 const TweetItem = ({ item: tweet }) => {
   return (
     <View style={styles.row}>
-      <Image style={styles.rowIcon} source={tweet.pic} />
+      <Image style={styles.rowIcon} source={tweet.availBuses.source} />
       <View style={styles.rowData}>
-        <Text style={styles.rowDataText}>{`${tweet.date} ${tweet.user} ${tweet.private} ${tweet.aboutme}`}</Text>
-        <Text style={styles.rowDataSubText}>{tweet.description}</Text>
+        <Text style={styles.rowDataSubText}>{tweet.availBuses.destination}</Text>
       </View>
     </View>
   );

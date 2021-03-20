@@ -15,6 +15,13 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 //import MenuContext from 'material-ui-shell/lib/providers/Menu/Context'
 import { Link } from 'react-router-dom'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -58,9 +65,30 @@ const useStyles = makeStyles((theme) => ({
 const TBook = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [tweet, setTweet] = useState('');
+  const [avail, setAvail] = useState([]);
   const [username, setUsername] = useState('');
   const [jdate, setJDate] = useState(new Date());
+  const [tweet, setTweet] = useState('');
+
+
+
+  const toggleButtonOne = () => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          "ticketFrom":"North Station",
+          "ticketTo":"Boston University",
+          "ticketDay": 13,
+          "ticketMonth": 12
+      })
+    };
+    fetch('http://localhost:5000/search', requestOptions).then((resp)=>{ return resp.json() })
+    .then((text)=>{ 
+      console.log(text);
+      setAvail([...text]);
+     })
+  };
 
   // async launch POST
   const postTweet = async (user, description, priv, pic) => {
@@ -170,10 +198,20 @@ const TBook = () => {
                 label={'From'}
                 required
                 >
-                <MenuItem value={'Boston'}>Boston</MenuItem>
-                <MenuItem value={'NewYork'}>NewYork</MenuItem>
-                <MenuItem value={'Chicago'}>Chicago</MenuItem>
-                </Select>
+              <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
+              <MenuItem value={'Back Bay'}>Back Bay</MenuItem>
+              <MenuItem value={'North End'}>North End</MenuItem>
+              <MenuItem value={'North Station'}>North Station</MenuItem>
+              <MenuItem value={'Beacon Hill'}>Beacon Hill</MenuItem>
+              <MenuItem value={'Boston University'}>Boston University</MenuItem>
+              <MenuItem value={'Fenway'}>Fenway</MenuItem>
+              <MenuItem value={'South Station'}>South Station</MenuItem>
+              <MenuItem value={'Theatre District'}>Theatre District</MenuItem>
+              <MenuItem value={'West End'}>West End</MenuItem>
+              <MenuItem value={'Financial District'}>Financial District</MenuItem>
+              <MenuItem value={'Northeastern University'}>Northeastern University</MenuItem>
+
+              </Select>
 
             </FormControl>
 
@@ -189,9 +227,19 @@ const TBook = () => {
                 required
                 style={{minWidth: '50%', align: 'right'}}
                 >
-                <MenuItem value={'Boston'}>Boston</MenuItem>
-                <MenuItem value={'NewYork'}>NewYork</MenuItem>
-                <MenuItem value={'Chicago'}>Chicago</MenuItem>
+              <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
+              <MenuItem value={'Back Bay'}>Back Bay</MenuItem>
+              <MenuItem value={'North End'}>North End</MenuItem>
+              <MenuItem value={'North Station'}>North Station</MenuItem>
+              <MenuItem value={'Beacon Hill'}>Beacon Hill</MenuItem>
+              <MenuItem value={'Boston University'}>Boston University</MenuItem>
+              <MenuItem value={'Fenway'}>Fenway</MenuItem>
+              <MenuItem value={'South Station'}>South Station</MenuItem>
+              <MenuItem value={'Theatre District'}>Theatre District</MenuItem>
+              <MenuItem value={'West End'}>West End</MenuItem>
+              <MenuItem value={'Financial District'}>Financial District</MenuItem>
+              <MenuItem value={'Northeastern University'}>Northeastern University</MenuItem>
+
                 </Select>
             </FormControl>
             <TextField
@@ -213,8 +261,9 @@ const TBook = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={toggleButtonOne}
             >
-              {'Submit'}
+              {'Search'}
             </Button>
           </form>
 
@@ -229,7 +278,39 @@ const TBook = () => {
           </div>
         </div>
       </Paper>
+      <div>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Source</TableCell>
+              <TableCell>Destination</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Book</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {avail.map((item, i) => {
+              return (
+                <TableRow key={`row-${i}`}>
+                  <TableCell>{item.source}</TableCell>
+                  <TableCell>{item.destination}</TableCell>
+                  <TableCell>{item.datetime}</TableCell>
+                  <TableCell>
+                    <Button
+                      color="secondary"
+                    >
+                      Book
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>      
+            
     </React.Fragment>
+    
   )
 }
 

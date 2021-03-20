@@ -31,8 +31,8 @@ CORS(app)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Here are my datasets
-tweets = dict()      
-print(tweets)
+uber = dict() 
+print(uber)
 db = mongo_client.test
 print('Connect to...')
 
@@ -46,6 +46,126 @@ print(User)
 ################################################
 # Tweets 
 ################################################
+
+# database access layer
+def insert_user(r):
+    start_time = datetime.now()
+    with mongo_client:
+        #start_time_db = datetime.now()
+        db = mongo_client['uberdb']
+        #microseconds_caching_db = (datetime.now() - start_time_db).microseconds
+        #print("*** It took " + str(microseconds_caching_db) + " microseconds to cache mongo handle.")
+
+        print("...insert_user() to mongo: ", r)
+        try:
+            mongo_collection = db['user']
+            result = mongo_collection.insert_one(r)
+            print("inserted _ids: ", result.inserted_id)
+        except Exception as e:
+            print(e)
+
+    microseconds_doing_mongo_work = (datetime.now() - start_time).microseconds
+    print("*** It took " + str(microseconds_doing_mongo_work) + " microseconds to insert_one.")
+
+def insert_booking(r):
+    start_time = datetime.now()
+    with mongo_client:
+        #start_time_db = datetime.now()
+        db = mongo_client['uberdb']
+        #microseconds_caching_db = (datetime.now() - start_time_db).microseconds
+        #print("*** It took " + str(microseconds_caching_db) + " microseconds to cache mongo handle.")
+
+        print("...insert_user() to mongo: ", r)
+        try:
+            mongo_collection = db['bookings']
+            result = mongo_collection.insert_one(r)
+            print("inserted _ids: ", result.inserted_id)
+        except Exception as e:
+            print(e)
+
+    microseconds_doing_mongo_work = (datetime.now() - start_time).microseconds
+    print("*** It took " + str(microseconds_doing_mongo_work) + " microseconds to insert_one.")
+
+
+# endpoint to create new user
+@app.route("/insertUser", methods=["POST"])
+def add_user():
+    username = request.json['username']
+    password = request.json['password']
+    emailid = request.json['emailid']
+    
+    # check uniqueness of user before creation
+    userCheck = checkUserPresent("username",username)
+    print(userCheck)
+    if userCheck==0:
+        user = dict(username=username, password=password, emailid=emailid,
+                    signIn=False, date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    _id=str(ObjectId()))
+        uber[user['_id']] = user
+        print(uber)
+        insert_user(user)
+        return jsonify(user)
+    else:
+        return 'User already Present'
+
+@app.route('/find-one/<argument>/<value>/', methods=['GET']) 
+def checkUserSignIn(argument, value):
+    Database = mongo_client.get_database('uberdb')
+    User = Database.user
+    queryObject = {argument: value} 
+    query = User.find_one(queryObject,{"signIn":1}) 
+    
+    print(query.pop('_id'))
+
+    return jsonify(query)
+
+
+@app.route('/usercheck/<argument>/<value>/', methods=['GET']) 
+def checkUserPresent(argument, value):
+    Database = mongo_client.get_database('uberdb')
+    User = Database.user
+    #query = User.find_one(queryObject,{"username":1}) 
+    query = User.find({argument: { "$in": [value]}}).count()
+    return jsonify(query)
+
+
+# endpoint to create new user
+@app.route("/insertBook", methods=["POST"])
+def add_booking():
+    ticketFrom = request.json['ticketFrom']
+    ticketTo = request.json['ticketTo']
+    ticketDate = request.json['ticketDate']
+    
+    book = dict(ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate,
+                creationdate=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                 _id=str(ObjectId()))
+    uber[book['_id']] = book
+    print(book)
+    insert_booking(book)
+    return jsonify(book)
+
+
+# endpoint to search available bookings
+@app.route('/search', methods=['POST']) 
+def searchResults():
+  
+    ticketFrom = request.json['ticketFrom']
+    ticketTo = request.json['ticketTo']
+    dayOfJourney = request.json['ticketDay']
+    monthOfJourney = request.json['ticketMonth']
+    Database = mongo_client.get_database('uberdb')
+    Ride = Database.ride_details
+    #query = User.find_one(queryObject,{"username":1}) 
+    output=[]
+    i=0
+    query = Ride.find({ "$and":[{ "day": dayOfJourney},{"month": monthOfJourney}, {"source":ticketFrom}, {"destination":ticketTo}]})
+
+    for x in query: 
+        x.pop('_id')
+        output.append(x) 
+        #output[i].pop('_id') 
+        #i += 1
+    return jsonify(output)
 
 
 @app.route('/all', methods=['GET']) 
@@ -117,67 +237,6 @@ def filter_tweet(t):
                 private=tweet['private'], user=tweet['user'],
                 upvote=tweet['upvote'] if 'upvote' in tweet else 0,
                 pic=tweet['pic'])
-@app.route("/tweets-user-day", methods=["POST"])
-def get_tweets_user_day():
-    user = request.json['user']
-    todaystweets = dict(
-        filter(lambda elem: 
-                elem[1]['date'].split(' ')[0] == datetime.now().strftime("%Y-%m-%d") and
-                (
-                    False == elem[1]['private'] or
-                    user == elem[1]['user']
-                ), 
-                tweets.items())
-    )
-    #return jsonify(todaystweets)
-    return jsonify(
-        sorted(
-            [filter_tweet(k) for k in todaystweets.keys()],
-            key = lambda t: t['date']
-        )
-    )
-
-# endpoint to show all of this week's tweets (user-specific)
-@app.route("/tweets-user-week", methods=["POST"])
-def get_tweets_user_week():
-    user = request.json['user']
-    weekstweets = dict(
-        filter(lambda elem: 
-                (datetime.now() - datetime.strptime(elem[1]['date'].split(' ')[0], '%Y-%m-%d')).days < 7 and
-                (
-                    False == elem[1]['private'] or
-                    user == elem[1]['user']
-                ), 
-                tweets.items())
-    )
-    #return jsonify(weekstweets)
-    return jsonify(
-        sorted(
-            [filter_tweet(k) for k in weekstweets.keys()],
-            key = lambda t: t['date']
-        )
-    )
-
-
-@app.route("/tweets-user-week-results", methods=["GET"])
-def get_tweets_user_week_results():
-    user = request.json['user']
-    weektweets = dict(
-        filter(lambda elem: 
-                (datetime.now() - datetime.strptime(elem[1]['date'].split(' ')[0], '%Y-%m-%d')).days < 7 and
-                (
-                    False == elem[1]['private'] or
-                    user == elem[1]['user']
-                ), 
-                tweets.items())
-    )
-    #return jsonify(todaystweets)
-    return json.dumps({"results":
-        sorted(
-            [filter_tweet(k) for k in weektweets.keys()],
-            key = lambda t: t['date']
-        )
-    })
 
 
 # endpoint to get tweet detail by id
@@ -191,15 +250,10 @@ def tweet_detail(id):
 ################################################
 @app.route("/")
 def home(): 
-    return """Welcome to online mongo/twitter testing ground!<br />
+    return """Welcome to online uber testing ground!<br />
         <br />
         Run the following endpoints:<br />
         From collection:<br/>
-        http://localhost:5000/tweets<br />
-        http://localhost:5000/tweets-week<br />
-        http://localhost:5000/tweets-week-results<br />
-        Create new data:<br />
-        http://localhost:5000/mock-tweets<br />
         Optionally, to purge database: http://localhost:5000/purge-db"""
 
 

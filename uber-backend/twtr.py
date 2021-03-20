@@ -33,7 +33,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Here are my datasets
 tweets = dict()      
 
-db = mongo_client.test
+
 
 ################
 # Apply to mongo
