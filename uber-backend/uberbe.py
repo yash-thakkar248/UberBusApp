@@ -109,28 +109,59 @@ def updateSignIn(r):
     print("*** It took " + str(microseconds_doing_mongo_work) + " microseconds to update_one.")
 
 
+# endpoint to logout the user
+@app.route("/userLogOut", methods=["POST"])
+def sign_user_out():
+    username = request.json['username']
+    # validate correct user or not
+    # check user sign in or not
+    checkAlreadySignORNot = checkUserSignIn("username",username)
+    print(checkAlreadySignORNot)
+    if checkAlreadySignORNot:
+        user = dict(username=username,signIn=False)
+        print(user)
+        updateSignIn(user)
+        return jsonify(user)
+    else:
+        return jsonify('User Already Logged Out')
+
+
+# endpoint to check user validation
+@app.route("/valTest/<username>/<password>", methods=["GET"])
+def validateUser(username,password):
+    Database = mongo_client.get_database('uberdb')
+    User = Database.user
+    #query = User.find_one(queryObject,{"username":1}) 
+    #query = User.find({"username": { "$in": r['username']}, "password": { "$in": r['password']}}).count()
+    query = User.find({"$and":[{"username": username},{"password":password}]}).count()
+    print('Query fetched') 
+    print(query)
+    return query
+
+
 # endpoint to sign in the user
 @app.route("/userSignIn", methods=["POST"])
 def sign_user_in():
     username = request.json['username']
     password = request.json['password']
-    
+    authenticate = dict(username=username,password=password)
     # validate correct user or not
-    userCheck  = checkUserPresent("username",username)
-    print('User present or not:::')
+    print('before calling validation:::')
+    userCheck  = validateUser(username,password)
+    if userCheck==0:
+        return jsonify('Invalid Login');    
+    print('Validating User:::')
     print(userCheck)
     # check user sign in or not
     checkAlreadySignORNot = checkUserSignIn("username",username)
     print(checkAlreadySignORNot)
-    if checkAlreadySignORNot==1:
+    if not checkAlreadySignORNot:
         user = dict(username=username,signIn=True)
         print(user)
         updateSignIn(user)
         return jsonify(user)
-    elif checkAlreadySignORNot==0:
-        return jsonify('User already Sign In')
     else:
-        return jsonify('Invalid User')
+        return jsonify('User Already Sign In')
 
 # endpoint to create new user
 @app.route("/insertUser", methods=["POST"])
@@ -160,12 +191,12 @@ def checkUserSignIn(argument, value):
     Database = mongo_client.get_database('uberdb')
     User = Database.user
     queryObject = {argument: value} 
-    query = User.find_one(queryObject,{"signIn":1}) 
+    query = User.find_one(queryObject,{"signIn":1})
     if query:
         query.pop('_id')
         return query['signIn']
     else:
-        return 0
+        return 2
 
 
 
@@ -217,6 +248,27 @@ def searchResults():
         #i += 1
     return jsonify(output)
 
+
+@app.route('/bookTicket', methods=['POST']) 
+def bookTicket():
+  
+    ticketFrom = request.json['ticketFrom']
+    ticketTo = request.json['ticketTo']
+    dayOfJourney = request.json['ticketDay']
+    monthOfJourney = request.json['ticketMonth']
+    Database = mongo_client.get_database('uberdb')
+    Ride = Database.ride_details
+    #query = User.find_one(queryObject,{"username":1}) 
+    output=[]
+    i=0
+    query = Ride.find({ "$and":[{ "day": dayOfJourney},{"month": monthOfJourney}, {"source":ticketFrom}, {"destination":ticketTo}]})
+
+    for x in query: 
+        x.pop('_id')
+        output.append(x) 
+        #output[i].pop('_id') 
+        #i += 1
+    return jsonify(output)
 
 @app.route('/all', methods=['GET']) 
 def findAll(): 

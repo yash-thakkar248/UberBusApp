@@ -57,17 +57,62 @@ const SignIn = () => {
   const [password, setPassword] = useState('')
   //const { setAuthMenuOpen } = useContext(MenuContext)
 
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     // verify user/pwd
     //.. return userid
+    const paramdict = {
+      'username': username,
+      'password': password
+    }
 
+    try {
+      const config = {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(paramdict)
+      }
+      const response = await fetch("http://localhost:5000/userSignIn", config);
+      //const json = await response.json()
+      if (response.ok) {
+          console.log("success on send."); 
+          
+      } else {
+          alert("launch: failure on send!");
+      }
+      try {
+          const data = await response.json();
+          console.log("on reply:")
+          console.log(data);
+          if(data == "User Already Sign In"){
+            alert('Already Logged In')
+            return "<h1>Already Logged In</h1>";
+          }else{
+          localStorage.setItem('role', data.username)
+          console.log(data.username)
+          alert('Login Successful');
+          return "<h1>Login Successful</h1>"
+          }
+
+      } catch (err) {
+          console.log(err);
+          alert("exception on reply!");
+      }
+
+    } catch (error) {
+
+    }
+  
+    
     // save more: name, group, userid
-    authenticate({
+   /* authenticate({
       displayName: 'User',
       email: username,
-    })
+    })*/
   }
 
   const authenticate = (user) => {
@@ -126,6 +171,7 @@ const SignIn = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={handleSubmit}
             >
               {'Sign in'}
             </Button>

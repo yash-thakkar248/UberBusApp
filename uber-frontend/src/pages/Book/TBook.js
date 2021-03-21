@@ -66,19 +66,27 @@ const TBook = () => {
   const classes = useStyles();
   const history = useHistory();
   const [avail, setAvail] = useState([]);
-  const [username, setUsername] = useState('');
+  const [source, setSource] = useState('s');
   const [jdate, setJDate] = useState(new Date());
+  const [destination, setDestination] = useState('d');
+  const [journeyDate, setJourneyDate] = useState('');
   const [tweet, setTweet] = useState('');
+  const [username, setUsername] = useState('');
 
-
-
+/*
   const toggleButtonOne = () => {
+    console.log("Input search data");
+    console.log("Source" + source)
+    console.log("Destination" + destination)
+    console.log("Date" + journeyDate)
+    const dateSplit = journeyDate.split("-");
+    console.log(dateSplit)
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          "ticketFrom":"North Station",
-          "ticketTo":"Boston University",
+          "ticketFrom":source,
+          "ticketTo":destination,
           "ticketDay": 13,
           "ticketMonth": 12
       })
@@ -89,7 +97,7 @@ const TBook = () => {
       setAvail([...text]);
      })
   };
-
+*/
   // async launch POST
   const postTweet = async (user, description, priv, pic) => {
     const paramdict = {
@@ -136,11 +144,21 @@ const TBook = () => {
 
 
   const searchTicket = async () => {
+
+    const loggedInUser = localStorage.getItem("role");
+    console.log('User : ' + loggedInUser);
+
+    console.log("Input search data");
+    console.log("Source" + source)
+    console.log("Destination" + destination)
+    console.log("Date" + journeyDate)
+    const dateSplit = journeyDate.split("-");
+    console.log(dateSplit[2])
     const paramdict = {
-      "ticketFrom":"North Station",
-      "ticketTo":"Boston University",
-      "ticketDay": 13,
-      "ticketMonth": 12
+      "ticketFrom":source,
+      "ticketTo":destination,
+      "ticketDay": parseInt(dateSplit[2]),
+      "ticketMonth": parseInt(dateSplit[1])
     }
 
     try {
@@ -177,6 +195,12 @@ const TBook = () => {
       console.log(error);
       alert("exception on send");
     }
+  };
+  
+
+  const onItemClick = async (item) => {
+    console.log("Booking details");
+    console.log(item.source)
   };
 
   function handleSubmit(event) {
@@ -239,8 +263,10 @@ const TBook = () => {
             >
             <InputLabel required id="from-label">From</InputLabel>
                 <Select
+                value={source}
                 labelId="select-from"
                 label={'From'}
+                onChange={(e) => setSource(e.target.value)}
                 required
                 >
               <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
@@ -267,8 +293,10 @@ const TBook = () => {
             >
             <InputLabel required id="to-label">To</InputLabel>
                 <Select
+                value={destination}
                 labelId="select-to"
                 label={''}
+                onChange={(e) => setDestination(e.target.value)}
                 required
                 style={{minWidth: '50%', align: 'right'}}
                 >
@@ -297,6 +325,7 @@ const TBook = () => {
                 InputLabelProps={{
                 shrink: true,
                 }}
+                onInput={(e) => setJourneyDate(e.target.value)}
                 variant="outlined"
                 margin="normal"
             />
@@ -343,6 +372,7 @@ const TBook = () => {
                   <TableCell>
                     <Button
                       color="secondary"
+                      onClick={() => onItemClick(item)}
                     >
                       Book
                     </Button>
