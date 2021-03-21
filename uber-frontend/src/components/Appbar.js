@@ -39,6 +39,7 @@ import Compose from "../pages/Compose/Compose";
 
 import TBook from "../pages/Book/TBook"
 import THistory from "../pages/Book/THistory"
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const drawerWidth = 240;
 const history = createBrowserHistory();
@@ -169,6 +170,56 @@ export default function Dashboard() {
     setTitle(title);
   };
 
+  const handleLogOut = async () => {
+    const loggedInUser = localStorage.getItem("role");
+    console.log('User : ' + loggedInUser);
+
+    const paramdict = {
+      'username': loggedInUser
+    }
+
+    try {
+      const config = {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(paramdict)
+      }
+      const response = await fetch("http://localhost:5000/userLogOut", config);
+      //const json = await response.json()
+      if (response.ok) {
+          console.log("success on send."); 
+          
+      } else {
+          alert("launch: failure on send!");
+      }
+      try {
+          const data = await response.json();
+          console.log("on reply:")
+          console.log(data);
+          if(data == "User Already Logged Out"){
+            alert('Already Logged Out')
+            return "<h1>Already Logged Out</h1>";
+          }else{
+          localStorage.setItem('role', data.username)
+          console.log(data.username)
+          alert('Logout Successful');
+          return "<h1>Logout Successful</h1>"
+          }
+
+      } catch (err) {
+          console.log(err);
+          alert("exception on reply!");
+      }
+
+    } catch (error) {
+
+    }
+  
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -195,10 +246,8 @@ export default function Dashboard() {
           </Typography>
 
           {/* For kicks */}
-          <IconButton color="inherit">
-            <Badge badgeContent={2} color="secondary">
-              <NotificationsIcon />
-            </Badge>
+          <IconButton color="inherit" onClick={handleLogOut}>
+              <ExitToAppIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -309,6 +358,7 @@ export default function Dashboard() {
           {/* menu paths */}
           <Route exact path="/" component={Home} />
           <Route path="/tweets" component={THome} />
+
           <Route path="/book" component={TBook} />
           <Route path="/bookHistory" component={THistory} />
           <Route path="/compose" component={Compose} />
