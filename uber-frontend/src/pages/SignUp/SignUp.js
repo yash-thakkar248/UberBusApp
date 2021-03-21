@@ -56,14 +56,51 @@ const SignUp = () => {
   const history = useHistory()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
   //const { setAuthMenuOpen } = useContext(MenuContext)
 
-  function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     // register new user!
     //.. return userid
+    const paramdict = {
+      'username': username,
+      'password': password,
+      'emailid': email
+    }
 
+    try {
+      const config = {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(paramdict)
+      }
+      const response = await fetch("http://localhost:5000/insertUser", config);
+      //const json = await response.json()
+      if (response.ok) {
+          console.log("success on send."); 
+          
+      } else {
+          alert("launch: failure on send!");
+      }
+      try {
+          const data = await response.json();
+          console.log("on reply:")
+          console.log(data);
+          alert(data);
+
+      } catch (err) {
+          console.log(err);
+          alert("exception on reply!");
+      }
+
+    } catch (error) {
+
+    }
     // save more: name, group, userid
     authenticate({
       displayName: 'User',
@@ -118,8 +155,8 @@ const SignUp = () => {
               autoFocus
             />
             <TextField
-              value={username}
-              onInput={(e) => setUsername(e.target.value)}
+              value={email}
+              onInput={(e) => setEmail(e.target.value)}
               variant="outlined"
               margin="normal"
               required

@@ -75,7 +75,7 @@ def insert_booking(r):
         #microseconds_caching_db = (datetime.now() - start_time_db).microseconds
         #print("*** It took " + str(microseconds_caching_db) + " microseconds to cache mongo handle.")
 
-        print("...insert_user() to mongo: ", r)
+        print("...insert_booking() to mongo: ", r)
         try:
             mongo_collection = db['bookings']
             result = mongo_collection.insert_one(r)
@@ -180,7 +180,7 @@ def add_user():
         uber[user['_id']] = user
         print(uber)
         insert_user(user)
-        return jsonify(user)
+        return jsonify('User created successfully')
     else:
         return jsonify('User already Present')
 
@@ -210,14 +210,14 @@ def checkUserPresent(argument, value):
 
 
 
-# endpoint to create new user
+# endpoint to insert new booking
 @app.route("/insertBook", methods=["POST"])
 def add_booking():
     ticketFrom = request.json['ticketFrom']
     ticketTo = request.json['ticketTo']
     ticketDate = request.json['ticketDate']
-    
-    book = dict(ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate,
+    username = request.json['username']
+    book = dict(username=username, ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate,
                 creationdate=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                  _id=str(ObjectId()))
     uber[book['_id']] = book

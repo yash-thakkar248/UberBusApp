@@ -227,7 +227,7 @@ export default function Dashboard() {
       {/* This is the header AppBar */}
       <AppBar position="absolute" className={clsx(classes.appBar, 
           open && classes.appBarShift, collapsed && classes.appBar)}>
-        <Toolbar title={title} className={classes.toolbar}>
+        <Toolbar title={"Logout"} className={classes.toolbar}>
 
           {/* The Menu icon exposes the left pane menu bar */}
           <IconButton
