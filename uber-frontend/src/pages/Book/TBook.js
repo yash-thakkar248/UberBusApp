@@ -134,6 +134,51 @@ const TBook = () => {
     }
   };
 
+
+  const searchTicket = async () => {
+    const paramdict = {
+      "ticketFrom":"North Station",
+      "ticketTo":"Boston University",
+      "ticketDay": 13,
+      "ticketMonth": 12
+    }
+
+    try {
+      const config = {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(paramdict)
+      }
+      const response = await fetch("http://0.0.0.0:5000/search", config);
+      //const json = await response.json()
+      if (response.ok) {
+          //return json
+          //return response
+          console.log("success on send.");
+          
+      } else {
+          alert("launch: failure on send!");
+      }
+
+      try {
+        const data = await response.json();
+        console.log("on reply:")
+        console.log(data);
+        setAvail([...data]);
+      } catch (err) {
+        console.log(err);
+        alert("exception on reply!");
+      }
+
+    } catch (error) {
+      console.log(error);
+      alert("exception on send");
+    }
+  };
+
   function handleSubmit(event) {
     event.preventDefault()
 
@@ -261,7 +306,7 @@ const TBook = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={toggleButtonOne}
+              onClick={searchTicket}
             >
               {'Search'}
             </Button>
