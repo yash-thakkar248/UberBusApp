@@ -1,5 +1,7 @@
 # Uber Bus Application On AWS Cloud
 
+![Architecture](https://github.com/PARTHSONI95/UberBusApp/blob/main/readme_image.png)
+
 Following Micro-service architecture by running loosely coupled services on different EC2 instances have added following fucntionalities:
 
 1) allow a user to search and book a bus between Start destination and end destination for a given date
