@@ -72,30 +72,30 @@ const SignUp = () => {
 
     try {
       const config = {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paramdict)
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paramdict)
       }
       const response = await fetch("http://34.231.3.26:5000/insertUser", config);
       //const json = await response.json()
       if (response.ok) {
-          console.log("success on send."); 
-          
+        console.log("success on send.");
+
       } else {
-          alert("launch: failure on send!");
+        alert("launch: failure on send!");
       }
       try {
-          const data = await response.json();
-          console.log("on reply:")
-          console.log(data);
-          alert(data);
+        const data = await response.json();
+        console.log("on reply:")
+        console.log(data);
+        alert(data);
 
       } catch (err) {
-          console.log(err);
-          alert("exception on reply!");
+        console.log(err);
+        alert("exception on reply!");
       }
 
     } catch (error) {

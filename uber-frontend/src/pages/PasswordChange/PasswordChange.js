@@ -61,7 +61,7 @@ const PasswordChange = () => {
 
     // store new name, email, group!
     //..
-    
+
     history.replace('/signin')
   }
 

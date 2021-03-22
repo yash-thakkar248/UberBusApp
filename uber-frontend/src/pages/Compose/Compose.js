@@ -66,22 +66,22 @@ const Compose = () => {
 
     try {
       const config = {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paramdict)
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paramdict)
       }
       const response = await fetch("http://0.0.0.0:5000/tweet", config);
       //const json = await response.json()
       if (response.ok) {
-          //return json
-          //return response
-          console.log("success on send.");
-          
+        //return json
+        //return response
+        console.log("success on send.");
+
       } else {
-          alert("launch: failure on send!");
+        alert("launch: failure on send!");
       }
 
       try {
@@ -108,11 +108,11 @@ const Compose = () => {
       "women",
       "men"
     ];
-    const img_gender = myArray[Math.floor(Math.random()*myArray.length)];
-    const img_index = Math.floor(Math.random() * 100) + 1 ;
+    const img_gender = myArray[Math.floor(Math.random() * myArray.length)];
+    const img_index = Math.floor(Math.random() * 100) + 1;
     const img_url = 'https://randomuser.me/api/portraits/' + img_gender + '/' + img_index.toString() + '.jpg';
-    
-    postTweet(username, tweet, priv, img_url);  
+
+    postTweet(username, tweet, priv, img_url);
     alert('tweet posted!');
   }
 
