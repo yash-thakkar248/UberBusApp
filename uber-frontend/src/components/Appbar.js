@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { Router, Route, Link } from "react-router-dom";
 import { createBrowserHistory } from "history";
-
+import { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -168,6 +168,16 @@ export default function Dashboard() {
     setTitle(title);
   };
 
+  useEffect(() => {
+    // Update the document title using the browser API
+    const loggedInUser = localStorage.getItem("role");
+    if(loggedInUser == null){
+      setUserLogged("");
+    }else{
+      setUserLogged(loggedInUser);
+    }
+  });
+
   const handleLogOut = async () => {
     const loggedInUser = localStorage.getItem("role");
     console.log('User : ' + loggedInUser);
@@ -242,7 +252,7 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             {title}
           </Typography>
-
+          <Typography component="h3" variant="h6" color="inherit" noWrap>{loggedUser}</Typography>
           {/* For kicks */}
           <IconButton color="inherit" onClick={handleLogOut}>
               <ExitToAppIcon />
@@ -355,8 +365,6 @@ export default function Dashboard() {
 
           {/* menu paths */}
           <Route exact path="/" component={Home} />
-          <Route path="/tweets" component={THome} />
-
           <Route path="/book" component={TBook} />
           <Route path="/bookHistory" component={THistory} />
           <Route path="/compose" component={Compose} />

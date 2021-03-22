@@ -63,7 +63,12 @@ const SignIn = () => {
     console.log("Before User" + storedUser);
     // verify user/pwd
     if(storedUser != null){
-      alert('Please logout from the another user')
+      alert('Already logged in by user : ' + storedUser)
+      return;
+    }
+
+    if(typeof(username) === 'undefined' || typeof(password) === 'undefined' || username=='' || password==''){
+      alert('Please enter valid details');
       return;
     }
     //.. return userid
@@ -190,8 +195,8 @@ const SignIn = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Link to="/password_reset">Forgot Password?</Link>
-            <Link to="/signup">Register</Link>
+            {/*<Link to="/password_reset">Forgot Password?</Link>*/}
+            <Link to="/signup">Create New User</Link>
           </div>
         </div>
       </Paper>
