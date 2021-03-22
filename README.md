@@ -2,9 +2,9 @@
 
 ![Architecture](https://github.com/PARTHSONI95/UberBusApp/blob/main/readme_image.png)
 
-Following Micro-service architecture by running loosely coupled services on different EC2 instances have added following fucntionalities:
+Following Micro-service architecture by running loosely coupled services on different EC2 instances have added following functionalities:
 
-1) allow a user to search and book a bus between Start destination and end destination for a given date
+1) allow a user to search and book a bus between Start destination and End destination for a given date
 2) a page to retrieve all the books
 
 ## Technology stack used 
