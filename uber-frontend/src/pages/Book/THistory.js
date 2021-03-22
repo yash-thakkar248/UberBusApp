@@ -14,13 +14,10 @@ import Button from '@material-ui/core/Button'
 
 const THistory = () => {
   const [tickets, setBookings] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);   
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-       
-        const loggedInUser = localStorage.getItem("role");
-        console.log('User : ' + loggedInUser);
 
         if(typeof(loggedInUser) == 'undefined' || loggedInUser == null){
           console.log('Type found is null')
@@ -31,73 +28,77 @@ const THistory = () => {
           "username":loggedInUser
         }
 
-        try {
-          const config = {
-              method: 'POST',
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(paramdict)
-          }
-          const response = await fetch("http://localhost:5000/showBookedTickets", config);
-          //const json = await response.json()
+      const paramdict = {
+        "username": loggedInUser
+      }
 
-          try {
-            const data = await response.json();
-            console.log("on reply:")
-            console.log(data);
-            setBookings([...data]);
-          } catch (err) {
-            console.log(err);
-            alert("exception on reply!");
-          }
-
-        } catch (error) {
-          console.log(error);
-          alert("exception on send");
+      try {
+        const config = {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(paramdict)
         }
-    }    
+        const response = await fetch("http://34.231.3.26:5000/showBookedTickets", config);
+        //const json = await response.json()
+
+        try {
+          const data = await response.json();
+          console.log("on reply:")
+          console.log(data);
+          setBookings([...data]);
+        } catch (err) {
+          console.log(err);
+          alert("exception on reply!");
+        }
+
+      } catch (error) {
+        console.log(error);
+        alert("exception on send");
+      }
+    }
     fetchData();
-      
+
   }, []);
 
   return (
     <ScrollView noSpacer={true} noScroll={true} style={styles.container}>
-	  {loading ? (
-	    <ActivityIndicator
-		  style={[styles.centering]}
-		  color="#ff8179"
-		  size="large"
-	    />
-	  ) : (
-      <div>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Booking ID</TableCell>
-            <TableCell>Source</TableCell>
-            <TableCell>Destination</TableCell>
-            <TableCell>Journey Date</TableCell>
-            <TableCell>Booking Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tickets.map((item, i) => {
-            return (
-              <TableRow key={`row-${i}`}>
-                <TableCell>{item._id}</TableCell>
-                <TableCell>{item.ticketFrom}</TableCell>
-                <TableCell>{item.ticketTo}</TableCell>
-                <TableCell>{item.bookeddate}</TableCell>
-                <TableCell>{item.creationdate}</TableCell>
+      {loading ? (
+        <ActivityIndicator
+          style={[styles.centering]}
+          color="#ff8179"
+          size="large"
+        />
+      ) : (
+        <div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Booking ID</TableCell>
+                <TableCell>Source</TableCell>
+                <TableCell>Destination</TableCell>
+                <TableCell>Journey Date</TableCell>
+                <TableCell>Booking Date</TableCell>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div> 
-	  )}
+            </TableHead>
+            <TableBody>
+              {tickets.map((item, i) => {
+                return (
+                  <TableRow key={`row-${i}`}>
+                    <TableCell>{item._id}</TableCell>
+                    <TableCell>{item.ticketFrom}</TableCell>
+                    <TableCell>{item.ticketTo}</TableCell>
+                    <TableCell>{item.bookeddate}</TableCell>
+                    <TableCell>{item.creationdate}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </ScrollView>
   );
 }

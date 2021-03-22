@@ -171,9 +171,9 @@ export default function Dashboard() {
   useEffect(() => {
     // Update the document title using the browser API
     const loggedInUser = localStorage.getItem("role");
-    if(loggedInUser == null){
+    if (loggedInUser == null) {
       setUserLogged("");
-    }else{
+    } else {
       setUserLogged(loggedInUser);
     }
   });
@@ -188,44 +188,44 @@ export default function Dashboard() {
 
     try {
       const config = {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paramdict)
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paramdict)
       }
-      const response = await fetch("http://localhost:5000/userLogOut", config);
+      const response = await fetch("http://34.231.3.26:5000/userLogOut", config);
       //const json = await response.json()
       if (response.ok) {
-          console.log("success on send."); 
-          
+        console.log("success on send.");
+
       } else {
-          alert("launch: failure on send!");
+        alert("launch: failure on send!");
       }
       try {
-          const data = await response.json();
-          console.log("on reply:")
-          console.log(data);
-          if(data == "User Already Logged Out"){
-            alert('Already Logged Out')
-            return "<h1>Already Logged Out</h1>";
-          }else{
-          localStorage.removeItem("role");  
+        const data = await response.json();
+        console.log("on reply:")
+        console.log(data);
+        if (data == "User Already Logged Out") {
+          alert('Already Logged Out')
+          return "<h1>Already Logged Out</h1>";
+        } else {
+          localStorage.removeItem("role");
           console.log(data.username);
           alert('Logout Successful');
           return "<h1>Logout Successful</h1>"
-          }
+        }
 
       } catch (err) {
-          console.log(err);
-          alert("exception on reply!");
+        console.log(err);
+        alert("exception on reply!");
       }
 
     } catch (error) {
 
     }
-  
+
   }
 
   return (
@@ -233,8 +233,8 @@ export default function Dashboard() {
       <CssBaseline />
 
       {/* This is the header AppBar */}
-      <AppBar position="absolute" className={clsx(classes.appBar, 
-          open && classes.appBarShift, collapsed && classes.appBar)}>
+      <AppBar position="absolute" className={clsx(classes.appBar,
+        open && classes.appBarShift, collapsed && classes.appBar)}>
         <Toolbar title={"Logout"} className={classes.toolbar}>
 
           {/* The Menu icon exposes the left pane menu bar */}
@@ -255,7 +255,7 @@ export default function Dashboard() {
           <Typography component="h3" variant="h6" color="inherit" noWrap>{loggedUser}</Typography>
           {/* For kicks */}
           <IconButton color="inherit" onClick={handleLogOut}>
-              <ExitToAppIcon />
+            <ExitToAppIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -267,7 +267,7 @@ export default function Dashboard() {
         <Drawer
           variant="permanent"
           classes={{
-            paper: clsx(classes.drawerPaper, 
+            paper: clsx(classes.drawerPaper,
               !open && classes.drawerPaperClose,
               collapsed && classes.drawerPaperCollapsed)
           }}
@@ -321,7 +321,7 @@ export default function Dashboard() {
                 <LayersIcon />
               </ListItemIcon>
               <ListItemText primary="Sign In" />
-              { title === 'Sign In' && 
+              {title === 'Sign In' &&
                 <ListItemIcon>
                   <IconButton onClick={handleDrawerCollapsed}>
                     <ChevronLeftIcon />
@@ -329,16 +329,16 @@ export default function Dashboard() {
                 </ListItemIcon>
               }
             </ListItem>
-            {/* Book Train */}  
+            {/* Book Train */}
             <ListItem button component={Link} to="/book" onClick={onItemClick('Book Ticket')}>
               <ListItemIcon>
-              <EventBusyIcon />
+                <EventBusyIcon />
               </ListItemIcon>
               <ListItemText primary="Book Ticket" />
-              { title === 'Book Ticket' && 
+              {title === 'Book Ticket' &&
                 <ListItemIcon>
                   <IconButton onClick={handleDrawerCollapsed}>
-                  <ChevronLeftIcon />
+                    <ChevronLeftIcon />
                   </IconButton>
                 </ListItemIcon>
               }
@@ -346,17 +346,17 @@ export default function Dashboard() {
 
             <ListItem button component={Link} to="/bookHistory" onClick={onItemClick('History')}>
               <ListItemIcon>
-              <HistoryIcon />
+                <HistoryIcon />
               </ListItemIcon>
               <ListItemText primary="History" />
-              { title === 'History' && 
+              {title === 'History' &&
                 <ListItemIcon>
                   <IconButton onClick={handleDrawerCollapsed}>
-                  <ChevronLeftIcon />
+                    <ChevronLeftIcon />
                   </IconButton>
                 </ListItemIcon>
               }
-            </ListItem>  
+            </ListItem>
           </List>
         </Drawer>
 
@@ -375,7 +375,7 @@ export default function Dashboard() {
           {/* <Route path="/activity"><ActivityHome /></Route> */}
         </main>
       </Router>
-      
+
       {/* Whatever you put here will appear on all your pages, style appropriately! */}
     </div>
   );

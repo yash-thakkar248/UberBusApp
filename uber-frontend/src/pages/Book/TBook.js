@@ -73,32 +73,32 @@ const TBook = () => {
   const [tweet, setTweet] = useState('');
   const [username, setUsername] = useState(localStorage.getItem("role"));
 
-/*
-  const toggleButtonOne = () => {
-    console.log("Input search data");
-    console.log("Source" + source)
-    console.log("Destination" + destination)
-    console.log("Date" + journeyDate)
-    const dateSplit = journeyDate.split("-");
-    console.log(dateSplit)
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          "ticketFrom":source,
-          "ticketTo":destination,
-          "ticketDay": 13,
-          "ticketMonth": 12
-      })
+  /*
+    const toggleButtonOne = () => {
+      console.log("Input search data");
+      console.log("Source" + source)
+      console.log("Destination" + destination)
+      console.log("Date" + journeyDate)
+      const dateSplit = journeyDate.split("-");
+      console.log(dateSplit)
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            "ticketFrom":source,
+            "ticketTo":destination,
+            "ticketDay": 13,
+            "ticketMonth": 12
+        })
+      };
+      fetch('http://localhost:5000/search', requestOptions).then((resp)=>{ return resp.json() })
+      .then((text)=>{ 
+        console.log(text);
+        setAvail([...text]);
+       })
     };
-    fetch('http://localhost:5000/search', requestOptions).then((resp)=>{ return resp.json() })
-    .then((text)=>{ 
-      console.log(text);
-      setAvail([...text]);
-     })
-  };
-*/
- 
+  */
+
 
   const searchTicket = async () => {
 
@@ -112,30 +112,30 @@ const TBook = () => {
     const dateSplit = journeyDate.split("-");
     console.log(dateSplit[2])
     const paramdict = {
-      "ticketFrom":source,
-      "ticketTo":destination,
+      "ticketFrom": source,
+      "ticketTo": destination,
       "ticketDay": parseInt(dateSplit[2]),
       "ticketMonth": parseInt(dateSplit[1])
     }
 
     try {
       const config = {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paramdict)
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paramdict)
       }
       const response = await fetch("http://localhost:5000/search", config);
       //const json = await response.json()
       if (response.ok) {
-          //return json
-          //return response
-          console.log("success on send.");
-          
+        //return json
+        //return response
+        console.log("success on send.");
+
       } else {
-          alert("launch: failure on send!");
+        alert("launch: failure on send!");
       }
 
       try {
@@ -153,7 +153,7 @@ const TBook = () => {
       alert("exception on send");
     }
   };
-  
+
 
   const onItemClick = async (item) => {
 
@@ -171,39 +171,27 @@ const TBook = () => {
         'ticketTo': item.destination,
         'ticketDate': item.datetime
       }
+      const response = await fetch("http://34.231.3.26:5000/insertBook", config);
+      //const json = await response.json()
+      if (response.ok) {
+        console.log("success on send.");
 
+      } else {
+        alert("launch: failure on send!");
+      }
       try {
-        const config = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(paramdict)
-        }
-        const response = await fetch("http://localhost:5000/insertBook", config);
-        //const json = await response.json()
-        if (response.ok) {
-            console.log("success on send."); 
-            
-        } else {
-            alert("launch: failure on send!");
-        }
-        try {
-            const data = await response.json();
-            console.log("on reply:")
-            console.log(data);
-            alert(data);
-        } catch (err) {
-            console.log(err);
-            alert("exception on reply!");
-        }
-
-      } catch (error) {
+        const data = await response.json();
+        console.log("on reply:")
+        console.log(data);
+        alert(data);
+      } catch (err) {
+        console.log(err);
+        alert("exception on reply!");
+      }
 
     }
-    
-  };
+
+  
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -214,8 +202,8 @@ const TBook = () => {
       "women",
       "men"
     ];
-    const img_gender = myArray[Math.floor(Math.random()*myArray.length)];
-    const img_index = Math.floor(Math.random() * 100) + 1 ;
+    const img_gender = myArray[Math.floor(Math.random() * myArray.length)];
+    const img_index = Math.floor(Math.random() * 100) + 1;
     const img_url = 'https://randomuser.me/api/portraits/' + img_gender + '/' + img_index.toString() + '.jpg';
     searchTicket();
   }
@@ -227,7 +215,7 @@ const TBook = () => {
           <Typography component="h1" variant="h5">
             {'Enter travel details'}
           </Typography>
-          
+
           <form className={classes.form} onSubmit={handleSubmit} noValidate>
             {/*
             <TextField
@@ -257,77 +245,77 @@ const TBook = () => {
               autoFocus
             /> */}
             <FormControl className={classes.formControl}
-            style={{minWidth: '50%',align: 'left'}}
-            variant="outlined"
-            margin="normal"
+              style={{ minWidth: '50%', align: 'left' }}
+              variant="outlined"
+              margin="normal"
             >
-            <InputLabel required id="from-label">From</InputLabel>
-                <Select
+              <InputLabel required id="from-label">From</InputLabel>
+              <Select
                 value={source}
                 labelId="select-from"
                 label={'From'}
                 onChange={(e) => setSource(e.target.value)}
                 required
-                >
-              <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
-              <MenuItem value={'Back Bay'}>Back Bay</MenuItem>
-              <MenuItem value={'North End'}>North End</MenuItem>
-              <MenuItem value={'North Station'}>North Station</MenuItem>
-              <MenuItem value={'Beacon Hill'}>Beacon Hill</MenuItem>
-              <MenuItem value={'Boston University'}>Boston University</MenuItem>
-              <MenuItem value={'Fenway'}>Fenway</MenuItem>
-              <MenuItem value={'South Station'}>South Station</MenuItem>
-              <MenuItem value={'Theatre District'}>Theatre District</MenuItem>
-              <MenuItem value={'West End'}>West End</MenuItem>
-              <MenuItem value={'Financial District'}>Financial District</MenuItem>
-              <MenuItem value={'Northeastern University'}>Northeastern University</MenuItem>
+              >
+                <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
+                <MenuItem value={'Back Bay'}>Back Bay</MenuItem>
+                <MenuItem value={'North End'}>North End</MenuItem>
+                <MenuItem value={'North Station'}>North Station</MenuItem>
+                <MenuItem value={'Beacon Hill'}>Beacon Hill</MenuItem>
+                <MenuItem value={'Boston University'}>Boston University</MenuItem>
+                <MenuItem value={'Fenway'}>Fenway</MenuItem>
+                <MenuItem value={'South Station'}>South Station</MenuItem>
+                <MenuItem value={'Theatre District'}>Theatre District</MenuItem>
+                <MenuItem value={'West End'}>West End</MenuItem>
+                <MenuItem value={'Financial District'}>Financial District</MenuItem>
+                <MenuItem value={'Northeastern University'}>Northeastern University</MenuItem>
 
               </Select>
 
             </FormControl>
 
             <FormControl className={classes.formControl}
-            style={{minWidth: '50%',align: 'right'}}
-            variant="outlined"
-            margin="normal"
+              style={{ minWidth: '50%', align: 'right' }}
+              variant="outlined"
+              margin="normal"
             >
-            <InputLabel required id="to-label">To</InputLabel>
-                <Select
+              <InputLabel required id="to-label">To</InputLabel>
+              <Select
                 value={destination}
                 labelId="select-to"
                 label={''}
                 onChange={(e) => setDestination(e.target.value)}
                 required
-                style={{minWidth: '50%', align: 'right'}}
-                >
-              <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
-              <MenuItem value={'Back Bay'}>Back Bay</MenuItem>
-              <MenuItem value={'North End'}>North End</MenuItem>
-              <MenuItem value={'North Station'}>North Station</MenuItem>
-              <MenuItem value={'Beacon Hill'}>Beacon Hill</MenuItem>
-              <MenuItem value={'Boston University'}>Boston University</MenuItem>
-              <MenuItem value={'Fenway'}>Fenway</MenuItem>
-              <MenuItem value={'South Station'}>South Station</MenuItem>
-              <MenuItem value={'Theatre District'}>Theatre District</MenuItem>
-              <MenuItem value={'West End'}>West End</MenuItem>
-              <MenuItem value={'Financial District'}>Financial District</MenuItem>
-              <MenuItem value={'Northeastern University'}>Northeastern University</MenuItem>
+                style={{ minWidth: '50%', align: 'right' }}
+              >
+                <MenuItem value={'Haymarket Square'}>Haymarket Square</MenuItem>
+                <MenuItem value={'Back Bay'}>Back Bay</MenuItem>
+                <MenuItem value={'North End'}>North End</MenuItem>
+                <MenuItem value={'North Station'}>North Station</MenuItem>
+                <MenuItem value={'Beacon Hill'}>Beacon Hill</MenuItem>
+                <MenuItem value={'Boston University'}>Boston University</MenuItem>
+                <MenuItem value={'Fenway'}>Fenway</MenuItem>
+                <MenuItem value={'South Station'}>South Station</MenuItem>
+                <MenuItem value={'Theatre District'}>Theatre District</MenuItem>
+                <MenuItem value={'West End'}>West End</MenuItem>
+                <MenuItem value={'Financial District'}>Financial District</MenuItem>
+                <MenuItem value={'Northeastern University'}>Northeastern University</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
             <TextField
-                id="date"
-                label="Date of Journey"
-                type="date"
-                className={classes.textField}
-                defaultValue=''
-                InputProps={{ inputProps: { min: jdate }}}
-                InputLabelProps={{
+              id="date"
+              label="Date of Journey"
+              type="date"
+              className={classes.textField}
+              defaultValue=''
+              InputProps={{ inputProps: { min: jdate } }}
+              InputLabelProps={{
                 shrink: true,
-                }}
-                onInput={(e) => setJourneyDate(e.target.value)}
-                variant="outlined"
-                margin="normal"
+              }}
+              onInput={(e) => setJourneyDate(e.target.value)}
+              variant="outlined"
+              margin="normal"
             />
             <Button
               type="submit"
@@ -382,10 +370,10 @@ const TBook = () => {
             })}
           </TableBody>
         </Table>
-      </div>      
-            
+      </div>
+
     </React.Fragment>
-    
+
   )
 }
 

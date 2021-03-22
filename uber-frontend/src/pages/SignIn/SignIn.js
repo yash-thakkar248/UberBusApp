@@ -62,12 +62,12 @@ const SignIn = () => {
     const storedUser = localStorage.getItem('role');
     console.log("Before User" + storedUser);
     // verify user/pwd
-    if(storedUser != null){
+    if (storedUser != null) {
       alert('Already logged in by user : ' + storedUser)
       return;
     }
 
-    if(typeof(username) === 'undefined' || typeof(password) === 'undefined' || username=='' || password==''){
+    if (typeof (username) === 'undefined' || typeof (password) === 'undefined' || username == '' || password == '') {
       alert('Please enter valid details');
       return;
     }
@@ -79,20 +79,20 @@ const SignIn = () => {
 
     try {
       const config = {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paramdict)
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paramdict)
       }
-      const response = await fetch("http://localhost:5000/userSignIn", config);
+      const response = await fetch("http://34.231.3.26:5000/userSignIn", config);
       //const json = await response.json()
       if (response.ok) {
-          console.log("success on send."); 
-          
+        console.log("success on send.");
+
       } else {
-          alert("launch: failure on send!");
+        alert("launch: failure on send!");
       }
       try {
           const data = await response.json();
@@ -109,24 +109,24 @@ const SignIn = () => {
           console.log(data.username)
           alert('Login Successful');
           return "<h1>Login Successful</h1>"
-          }
+        }
 
 
       } catch (err) {
-          console.log(err);
-          alert("exception on reply!");
+        console.log(err);
+        alert("exception on reply!");
       }
 
     } catch (error) {
 
     }
-  
-    
+
+
     // save more: name, group, userid
-   /* authenticate({
-      displayName: 'User',
-      email: username,
-    })*/
+    /* authenticate({
+       displayName: 'User',
+       email: username,
+     })*/
   }
 
   const authenticate = (user) => {

@@ -18,10 +18,10 @@ function Home(props) {
   const { classes } = props;
 
   return (
-      <div className={classes.root}>
-        <h1>Welcome to Uber Bus Service</h1>
-        <img src={logo} alt="loading..." />
-      </div>
+    <div className={classes.root}>
+      <h1>Welcome to Uber Bus Service</h1>
+      <img src={logo} alt="loading..." />
+    </div>
   );
 }
 
