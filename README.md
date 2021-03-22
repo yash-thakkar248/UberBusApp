@@ -1,4 +1,4 @@
-# Uber Bus Application On AWS Cloud
+# Uber Bus Application nn AWS Cloud
 
 ![Architecture](https://github.com/PARTHSONI95/UberBusApp/blob/main/readme_image.png)
 
@@ -7,7 +7,7 @@ Following Micro-service architecture by running loosely coupled services on diff
 1) allow a user to search and book a bus between Start destination and end destination for a given date
 2) a page to retrieve all the books
 
-## Technology Stack used 
+## Technology stack used 
 
 * Front End - [React](https://reactjs.org/)
 * Back End  - [Flask](https://palletsprojects.com/p/flask/)
@@ -36,3 +36,5 @@ To stop the application -
 ```bash
 $ terraform destroy -auto-approve 
 ```
+
+### THANK YOU :)
