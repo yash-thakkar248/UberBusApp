@@ -1,19 +1,17 @@
 
+# variable "a_key" {
+#   type        = "string"
+#   description = "Enter Access Key:"
+# }
 
-
-variable "a_key" {
-  type        = "string"
-  description = "Enter Access Key:"
-}
-
-variable "s_key" {
-  type        = "string"
-  description = "Enter Secret Key:"
-}
+# variable "s_key" {
+#   type        = "string"
+#   description = "Enter Secret Key:"
+# }
 
 provider "aws" {
-  access_key = var.a_key
-  secret_key = var.s_key
+#   access_key = var.a_key
+#   secret_key = var.s_key
   region     = "us-east-1"
 }
 
@@ -61,6 +59,12 @@ resource "aws_security_group" "security_backend" {
         protocol = "tcp" 
         cidr_blocks = ["0.0.0.0/0"]
     }
+    # ingress {
+    #     from_port = 80
+    #     to_port = 80
+    #     protocol = "tcp" 
+    #     cidr_blocks = ["0.0.0.0/0"]
+    # }
     egress { 
         from_port = 0
         to_port = 0
@@ -83,6 +87,12 @@ resource "aws_security_group" "security_frontend" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp" 
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
         from_port = 3000
         to_port = 3000
         protocol = "tcp" 
@@ -101,7 +111,8 @@ resource "aws_security_group" "security_frontend" {
 
 resource "aws_instance" "frontend" {
     # ami = "ami-2757f631"
-    ami = "ami-042e8287309f5df03"
+    # ami = "ami-042e8287309f5df03"
+    ami = "ami-00a2faa3cbd561d33"
     instance_type = "t2.micro"
     vpc_security_group_ids = ["${aws_security_group.security_frontend.id}","${aws_security_group.allow_ssh.id}"] 
     # security_groups = ["${aws_security_group.tenable.name}"]
@@ -121,6 +132,10 @@ resource "aws_instance" "frontend" {
         source      = "script-fe.sh"
         destination = "/home/ubuntu/script-fe.sh"
     }
+    provisioner "file" {
+        source      = "front-end.nginx"
+        destination = "/home/ubuntu/front-end.nginx"
+    }
 
     provisioner "remote-exec" {
         inline = [
@@ -133,7 +148,8 @@ resource "aws_instance" "frontend" {
 
 resource "aws_instance" "backend" {
     # ami = "ami-2757f631"
-    ami = "ami-042e8287309f5df03"
+    # ami = "ami-042e8287309f5df03"
+    ami = "ami-00a2faa3cbd561d33"
     instance_type = "t2.micro"
     vpc_security_group_ids = ["${aws_security_group.security_backend.id}","${aws_security_group.allow_ssh.id}"] 
     # security_groups = ["${aws_security_group.tenable.name}"]
@@ -152,6 +168,18 @@ resource "aws_instance" "backend" {
     provisioner "file" {
         source      = "script-be.sh"
         destination = "/home/ubuntu/script-be.sh"
+    }
+    provisioner "file" {
+        source      = "back-end.nginx"
+        destination = "/home/ubuntu/back-end.nginx"
+    }
+    provisioner "file" {
+        source      = "back-end.service"
+        destination = "/home/ubuntu/back-end.service"
+    }
+    provisioner "file" {
+        source      = "wsgi.py"
+        destination = "/home/ubuntu/wsgi.py"
     }
 
     provisioner "remote-exec" {
