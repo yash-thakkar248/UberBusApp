@@ -7,11 +7,11 @@ Following Micro-service architecture by running loosely coupled services on diff
 
 ## Technology Stack used 
 
-Front End - [React](https://reactjs.org/)
-Back End  - [Flask](https://palletsprojects.com/p/flask/)
-Database  - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-Cloud     - [AWS](https://aws.amazon.com/)
-IaaS      - [Terraform](https://www.terraform.io/)
+* Front End - [React](https://reactjs.org/)
+* Back End  - [Flask](https://palletsprojects.com/p/flask/)
+* Database  - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+* Cloud     - [AWS](https://aws.amazon.com/)
+* IaaS      - [Terraform](https://www.terraform.io/)
 
 ## How to run the project
 
