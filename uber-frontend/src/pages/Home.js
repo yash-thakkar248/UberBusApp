@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
+import logo from './uberbus.gif';
 
 const styles = theme => ({
   root: {
@@ -18,7 +19,8 @@ function Home(props) {
 
   return (
       <div className={classes.root}>
-        <h1>Landing page</h1>
+        <h1>Welcome to Uber Bus Service</h1>
+        <img src={logo} alt="loading..." />
       </div>
   );
 }
