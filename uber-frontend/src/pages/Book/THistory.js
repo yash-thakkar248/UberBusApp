@@ -1,24 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, ActivityIndicator } from "react-native";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button'
+
 
 //import axios from 'axios';
 
 const THistory = () => {
-  const [tweets, setTweets] = React.useState([]);
+  const [tickets, setBookings] = React.useState([]);
   const [loading, setLoading] = React.useState(false);   
-/*
+
   useEffect(() => {
     const fetchData = async () => {
-	  const res = await fetch("http://0.0.0.0:5000/tweets-results");
-      const { results } = await res.json();
-      console.log(results);
-      setTweets([...results]);
-	    setLoading(false);
-    };
- 
+       
+        const loggedInUser = localStorage.getItem("role");
+        console.log('User : ' + loggedInUser);
+
+        const paramdict = {
+          "username":loggedInUser
+        }
+
+        try {
+          const config = {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(paramdict)
+          }
+          const response = await fetch("http://localhost:5000/showBookedTickets", config);
+          //const json = await response.json()
+
+          try {
+            const data = await response.json();
+            console.log("on reply:")
+            console.log(data);
+            setBookings([...data]);
+          } catch (err) {
+            console.log(err);
+            alert("exception on reply!");
+          }
+
+        } catch (error) {
+          console.log(error);
+          alert("exception on send");
+        }
+    }    
     fetchData();
+      
   }, []);
-*/
+
   return (
     <ScrollView noSpacer={true} noScroll={true} style={styles.container}>
 	  {loading ? (
@@ -28,7 +66,32 @@ const THistory = () => {
 		  size="large"
 	    />
 	  ) : (
-	    <p>Here the results will come</p>
+      <div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Booking ID</TableCell>
+            <TableCell>Source</TableCell>
+            <TableCell>Destination</TableCell>
+            <TableCell>Journey Date</TableCell>
+            <TableCell>Booking Date</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tickets.map((item, i) => {
+            return (
+              <TableRow key={`row-${i}`}>
+                <TableCell>{item._id}</TableCell>
+                <TableCell>{item.ticketFrom}</TableCell>
+                <TableCell>{item.ticketTo}</TableCell>
+                <TableCell>{item.bookeddate}</TableCell>
+                <TableCell>{item.creationdate}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div> 
 	  )}
     </ScrollView>
   );

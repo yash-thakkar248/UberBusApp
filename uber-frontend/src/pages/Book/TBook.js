@@ -71,7 +71,7 @@ const TBook = () => {
   const [destination, setDestination] = useState('d');
   const [journeyDate, setJourneyDate] = useState('');
   const [tweet, setTweet] = useState('');
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(localStorage.getItem("role"));
 
 /*
   const toggleButtonOne = () => {
@@ -170,7 +170,7 @@ const TBook = () => {
           },
           body: JSON.stringify(paramdict)
       }
-      const response = await fetch("http://34.231.3.26:5000/search", config);
+      const response = await fetch("http://localhost:5000/search", config);
       //const json = await response.json()
       if (response.ok) {
           //return json
@@ -199,8 +199,47 @@ const TBook = () => {
   
 
   const onItemClick = async (item) => {
-    console.log("Booking details");
-    console.log(item.source)
+
+      const loggedInUser = localStorage.getItem("role");
+      console.log('User state value is ' + username);
+      const paramdict = {
+        'username': loggedInUser,
+        'ticketFrom': item.source,
+        'ticketTo': item.destination,
+        'ticketDate': item.datetime
+      }
+
+      try {
+        const config = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paramdict)
+        }
+        const response = await fetch("http://localhost:5000/insertBook", config);
+        //const json = await response.json()
+        if (response.ok) {
+            console.log("success on send."); 
+            
+        } else {
+            alert("launch: failure on send!");
+        }
+        try {
+            const data = await response.json();
+            console.log("on reply:")
+            console.log(data);
+            alert(data);
+        } catch (err) {
+            console.log(err);
+            alert("exception on reply!");
+        }
+
+      } catch (error) {
+
+    }
+    
   };
 
   function handleSubmit(event) {

@@ -77,7 +77,7 @@ def insert_booking(r):
 
         print("...insert_booking() to mongo: ", r)
         try:
-            mongo_collection = db['bookings']
+            mongo_collection = db['booked_tickets']
             result = mongo_collection.insert_one(r)
             print("inserted _ids: ", result.inserted_id)
         except Exception as e:
@@ -206,7 +206,7 @@ def checkUserPresent(argument, value):
     User = Database.user
     #query = User.find_one(queryObject,{"username":1}) 
     query = User.find({argument: { "$in": [value]}}).count()
-    return jsonify(query)
+    return query
 
 
 
@@ -223,7 +223,7 @@ def add_booking():
     uber[book['_id']] = book
     print(book)
     insert_booking(book)
-    return jsonify(book)
+    return jsonify("Ticket booked successfully")
 
 
 # endpoint to search available bookings
@@ -250,7 +250,7 @@ def searchResults():
 
 
 @app.route('/bookTicket', methods=['POST']) 
-def bookTicket():
+def showAvail():
   
     ticketFrom = request.json['ticketFrom']
     ticketTo = request.json['ticketTo']
@@ -270,6 +270,23 @@ def bookTicket():
         #i += 1
     return jsonify(output)
 
+@app.route('/showBookedTickets', methods=['POST']) 
+def showBookedTickets(): 
+    username = request.json['username']
+    BookedTickets = Database.booked_tickets
+    #query = User.find_one(queryObject,{"username":1}) 
+    output=[]
+    i=0
+    query = BookedTickets.find({"username": username})
+
+    for x in query: 
+        output.append(x) 
+        #output[i].pop('_id') 
+        #i += 1
+    return jsonify(output)
+
+
+
 @app.route('/all', methods=['GET']) 
 def findAll(): 
     query = User.find() 
@@ -281,71 +298,6 @@ def findAll():
         i += 1
     return jsonify(output)
 
-# endpoint to create new tweet
-@app.route("/tweet", methods=["POST"])
-def add_tweet():
-    user = request.json['user']
-    description = request.json['description']
-    private = request.json['private']
-    pic = request.json['pic']
-    tweet = dict(user=user, description=description, private=private,
-                upvote=0, date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                pic=pic, _id=str(ObjectId()))
-    tweets[tweet['_id']] = tweet
-
-    insert_one(tweet)
-    return jsonify(tweet)
-
-# endpoint to show all of today's tweets
-@app.route("/tweets-day2", methods=["GET"])
-def get_tweets_day2():
-    todaystweets = dict(
-        filter(lambda elem: 
-                elem[1]['date'].split(' ')[0] == datetime.now().strftime("%Y-%m-%d"), 
-                tweets.items())
-    )
-    return jsonify(todaystweets)
-
-# endpoint to show all tweets 
-@app.route("/tweets", methods=["GET"])
-def get_tweets2():
-    return jsonify(tweets)
-
-
-@app.route("/tweets-results", methods=["GET"])
-def get_tweets_results():
-    return json.dumps({"results":
-        sorted(
-            tweets.values(),
-            key = lambda t: t['date']
-        )
-    })
-
-
-@app.route("/bookresults", methods=["GET"])
-def get_book_results():
-    return json.dumps({"results":
-        sorted(
-            tweets.values(),
-        )
-    })
-
-
-
-# endpoint to show all of today's tweets (user-specific)
-def filter_tweet(t):
-    tweet = tweets[t]
-    return dict(date=tweet['date'], description=tweet['description'], 
-                private=tweet['private'], user=tweet['user'],
-                upvote=tweet['upvote'] if 'upvote' in tweet else 0,
-                pic=tweet['pic'])
-
-
-# endpoint to get tweet detail by id
-@app.route("/tweet/<id>", methods=["GET"])
-def tweet_detail(id):
-    return jsonify(tweets[id])
-
 
 ################################################
 # Mock
@@ -356,7 +308,7 @@ def home():
         <br />
         Run the following endpoints:<br />
         From collection:<br/>
-        Optionally, to purge database: http://localhost:5000/purge-db"""
+        Optionally, to see users : http://localhost:5000/all"""
 
 
 if __name__ == '__main__':
