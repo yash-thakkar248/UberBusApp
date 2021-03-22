@@ -35,7 +35,7 @@ const THistory = () => {
               },
               body: JSON.stringify(paramdict)
           }
-          const response = await fetch("http://localhost:5000/showBookedTickets", config);
+          const response = await fetch("http://34.231.3.26:5000/showBookedTickets", config);
           //const json = await response.json()
 
           try {

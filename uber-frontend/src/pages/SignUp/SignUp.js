@@ -79,7 +79,7 @@ const SignUp = () => {
           },
           body: JSON.stringify(paramdict)
       }
-      const response = await fetch("http://localhost:5000/insertUser", config);
+      const response = await fetch("http://34.231.3.26:5000/insertUser", config);
       //const json = await response.json()
       if (response.ok) {
           console.log("success on send."); 
