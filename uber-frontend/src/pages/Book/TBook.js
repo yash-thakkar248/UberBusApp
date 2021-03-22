@@ -127,7 +127,7 @@ const TBook = () => {
           },
           body: JSON.stringify(paramdict)
       }
-      const response = await fetch("http://34.231.3.26:5000/search", config);
+      const response = await fetch("http://localhost:5000/search", config);
       //const json = await response.json()
       if (response.ok) {
           //return json
@@ -159,6 +159,12 @@ const TBook = () => {
 
       const loggedInUser = localStorage.getItem("role");
       console.log('User state value is ' + username);
+
+      if(loggedInUser == null || typeof(loggedInUser)=='Undefined'){
+        alert('Please sign in first');
+        return;
+      }
+
       const paramdict = {
         'username': loggedInUser,
         'ticketFrom': item.source,

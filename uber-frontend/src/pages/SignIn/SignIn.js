@@ -100,13 +100,17 @@ const SignIn = () => {
           console.log(data);
           if(data == "User Already Sign In"){
             alert('Already Logged In')
-            return "<h1>Already Logged In</h1>";
+            return "Already Logged In";
+          }else if(data == "Invalid Login"){
+            alert('Invalid Login');
+            return;
           }else{
           localStorage.setItem('role', data.username)
           console.log(data.username)
           alert('Login Successful');
           return "<h1>Login Successful</h1>"
           }
+
 
       } catch (err) {
           console.log(err);

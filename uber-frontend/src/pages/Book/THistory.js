@@ -22,6 +22,11 @@ const THistory = () => {
         const loggedInUser = localStorage.getItem("role");
         console.log('User : ' + loggedInUser);
 
+        if(typeof(loggedInUser) == 'undefined' || loggedInUser == null){
+          console.log('Type found is null')
+          setBookings([]);
+          return;
+        }
         const paramdict = {
           "username":loggedInUser
         }
