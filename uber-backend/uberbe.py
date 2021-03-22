@@ -217,7 +217,7 @@ def checkUserPresent(argument, value):
     query = User.find({argument: {"$in": [value]}}).count()
     return query
 
-<<<<<<< HEAD
+
 def checkBookingAlreadyPresentOrNot(checkBook):
     Database = mongo_client.get_database('uberdb')
     btic= Database.booked_tickets
@@ -227,8 +227,6 @@ def checkBookingAlreadyPresentOrNot(checkBook):
     print('Booking fetched') 
     print(query)
     return int(query)
-=======
->>>>>>> a4ebac9d9a941eafabe3a230467513696e69b844
 
 # endpoint to insert new booking
 @app.route("/insertBook", methods=["POST"])
@@ -246,7 +244,6 @@ def add_booking():
         print('Book not present')
         book = dict(username=username, ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate,
                 creationdate=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-<<<<<<< HEAD
                  _id=str(ObjectId()))
         uber[book['_id']] = book
         print(book)
@@ -254,13 +251,6 @@ def add_booking():
         return jsonify("Ticket booked successfully")
     else:
         return jsonify("Ticket already booked")
-=======
-                _id=str(ObjectId()))
-    uber[book['_id']] = book
-    print(book)
-    insert_booking(book)
-    return jsonify("Ticket booked successfully")
->>>>>>> a4ebac9d9a941eafabe3a230467513696e69b844
 
 
 # endpoint to search available bookings
