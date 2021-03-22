@@ -144,7 +144,7 @@ def validateUser(username, password):
         {"$and": [{"username": username}, {"password": password}]}).count()
     print('Query fetched')
     print(query)
-    return query
+    return int(query)
 
 
 # endpoint to sign in the user
@@ -170,6 +170,7 @@ def sign_user_in():
         return jsonify(user)
     else:
         return jsonify('User Already Sign In')
+
 
 # endpoint to create new user
 
@@ -216,6 +217,18 @@ def checkUserPresent(argument, value):
     query = User.find({argument: {"$in": [value]}}).count()
     return query
 
+<<<<<<< HEAD
+def checkBookingAlreadyPresentOrNot(checkBook):
+    Database = mongo_client.get_database('uberdb')
+    btic= Database.booked_tickets
+    #query = User.find_one(queryObject,{"username":1}) 
+    #query = User.find({"username": { "$in": r['username']}, "password": { "$in": r['password']}}).count()
+    query = btic.find({"$and":[{"username": checkBook['username']},{"ticketFrom":checkBook['ticketFrom']},{"ticketTo":checkBook['ticketTo']},{"bookeddate":checkBook['bookeddate']}]}).count()
+    print('Booking fetched') 
+    print(query)
+    return int(query)
+=======
+>>>>>>> a4ebac9d9a941eafabe3a230467513696e69b844
 
 # endpoint to insert new booking
 @app.route("/insertBook", methods=["POST"])
@@ -224,13 +237,30 @@ def add_booking():
     ticketTo = request.json['ticketTo']
     ticketDate = request.json['ticketDate']
     username = request.json['username']
-    book = dict(username=username, ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate,
+
+    checkBook = dict(username=username, ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate)
+
+    # check whether already booked or not
+    bookPresentOrNot = checkBookingAlreadyPresentOrNot(checkBook)
+    if bookPresentOrNot==0:
+        print('Book not present')
+        book = dict(username=username, ticketFrom=ticketFrom, ticketTo=ticketTo, bookeddate=ticketDate,
                 creationdate=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+<<<<<<< HEAD
+                 _id=str(ObjectId()))
+        uber[book['_id']] = book
+        print(book)
+        insert_booking(book)
+        return jsonify("Ticket booked successfully")
+    else:
+        return jsonify("Ticket already booked")
+=======
                 _id=str(ObjectId()))
     uber[book['_id']] = book
     print(book)
     insert_booking(book)
     return jsonify("Ticket booked successfully")
+>>>>>>> a4ebac9d9a941eafabe3a230467513696e69b844
 
 
 # endpoint to search available bookings

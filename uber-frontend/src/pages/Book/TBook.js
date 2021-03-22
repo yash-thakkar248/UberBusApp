@@ -127,7 +127,7 @@ const TBook = () => {
         },
         body: JSON.stringify(paramdict)
       }
-      const response = await fetch("http://34.231.3.26:5000/search", config);
+      const response = await fetch("http://localhost:5000/search", config);
       //const json = await response.json()
       if (response.ok) {
         //return json
@@ -157,16 +157,20 @@ const TBook = () => {
 
   const onItemClick = async (item) => {
 
-    const loggedInUser = localStorage.getItem("role");
-    console.log('User state value is ' + username);
-    const paramdict = {
-      'username': loggedInUser,
-      'ticketFrom': item.source,
-      'ticketTo': item.destination,
-      'ticketDate': item.datetime
-    }
+      const loggedInUser = localStorage.getItem("role");
+      console.log('User state value is ' + username);
 
-    try {
+      if(loggedInUser == null || typeof(loggedInUser)=='Undefined'){
+        alert('Please sign in first');
+        return;
+      }
+
+      const paramdict = {
+        'username': loggedInUser,
+        'ticketFrom': item.source,
+        'ticketTo': item.destination,
+        'ticketDate': item.datetime
+      }
       const config = {
         method: 'POST',
         headers: {
@@ -193,11 +197,9 @@ const TBook = () => {
         alert("exception on reply!");
       }
 
-    } catch (error) {
-
     }
 
-  };
+  
 
   function handleSubmit(event) {
     event.preventDefault()

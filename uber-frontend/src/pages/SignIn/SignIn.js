@@ -95,18 +95,22 @@ const SignIn = () => {
         alert("launch: failure on send!");
       }
       try {
-        const data = await response.json();
-        console.log("on reply:")
-        console.log(data);
-        if (data == "User Already Sign In") {
-          alert('Already Logged In')
-          return "<h1>Already Logged In</h1>";
-        } else {
+          const data = await response.json();
+          console.log("on reply:")
+          console.log(data);
+          if(data == "User Already Sign In"){
+            alert('Already Logged In')
+            return "Already Logged In";
+          }else if(data == "Invalid Login"){
+            alert('Invalid Login');
+            return;
+          }else{
           localStorage.setItem('role', data.username)
           console.log(data.username)
           alert('Login Successful');
-          return "<h1>Login Successful</h1>"
+          return "<h1>Login Successful</h1>";
         }
+
 
       } catch (err) {
         console.log(err);
