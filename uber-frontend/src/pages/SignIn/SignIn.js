@@ -59,8 +59,13 @@ const SignIn = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-
+    const storedUser = localStorage.getItem('role');
+    console.log("Before User" + storedUser);
     // verify user/pwd
+    if(storedUser != null){
+      alert('Please logout from the another user')
+      return;
+    }
     //.. return userid
     const paramdict = {
       'username': username,

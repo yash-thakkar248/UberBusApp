@@ -15,13 +15,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
-import Badge from '@material-ui/core/Badge';
 
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import DashboardIcon from '@material-ui/icons/Dashboard';
 import LayersIcon from '@material-ui/icons/Layers';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
 import HistoryIcon from '@material-ui/icons/History';
@@ -153,6 +150,7 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
   const [collapsed, setCollapsed] = React.useState(false);
   const [title, setTitle] = React.useState('Home');
+  const [loggedUser, setUserLogged] = React.useState('');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -203,8 +201,8 @@ export default function Dashboard() {
             alert('Already Logged Out')
             return "<h1>Already Logged Out</h1>";
           }else{
-          localStorage.setItem('role', data.username)
-          console.log(data.username)
+          localStorage.removeItem("role");  
+          console.log(data.username);
           alert('Logout Successful');
           return "<h1>Logout Successful</h1>"
           }
@@ -227,7 +225,7 @@ export default function Dashboard() {
       {/* This is the header AppBar */}
       <AppBar position="absolute" className={clsx(classes.appBar, 
           open && classes.appBarShift, collapsed && classes.appBar)}>
-        <Toolbar title={title} className={classes.toolbar}>
+        <Toolbar title={"Logout"} className={classes.toolbar}>
 
           {/* The Menu icon exposes the left pane menu bar */}
           <IconButton
@@ -277,7 +275,7 @@ export default function Dashboard() {
           {/* Left pane menu items */}
           <List>
 
-            {/* Tweets menu item*/}
+            {/* Tweets menu item}
             <ListItem button component={Link} to="/tweets" onClick={onItemClick('Tweets')}>
               <ListItemIcon>
                 <DashboardIcon />
@@ -290,9 +288,9 @@ export default function Dashboard() {
                   </IconButton>
                 </ListItemIcon>
               }
-            </ListItem>
+            </ListItem> */}
 
-            {/* Compose menu item*/}
+            {/* Compose menu item
             <ListItem button component={Link} to="/compose" onClick={onItemClick('Compose')}>
               <ListItemIcon>
                 <DashboardIcon />
@@ -305,7 +303,7 @@ export default function Dashboard() {
                   </IconButton>
                 </ListItemIcon>
               }
-            </ListItem>
+            </ListItem> */}
 
             {/* SignUp menu item */}
             <ListItem button component={Link} to="/signin" onClick={onItemClick('Sign In')}>
