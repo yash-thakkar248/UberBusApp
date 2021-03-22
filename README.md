@@ -1,4 +1,4 @@
-# Uber Bus Application nn AWS Cloud
+# Uber Bus Application on AWS Cloud
 
 ![Architecture](https://github.com/PARTHSONI95/UberBusApp/blob/main/readme_image.png)
 
