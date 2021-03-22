@@ -108,7 +108,7 @@ const SignIn = () => {
           localStorage.setItem('role', data.username)
           console.log(data.username)
           alert('Login Successful');
-          return "<h1>Login Successful</h1>"
+          return "<h1>Login Successful</h1>";
         }
 
 

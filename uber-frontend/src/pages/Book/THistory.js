@@ -19,6 +19,9 @@ const THistory = () => {
   useEffect(() => {
     const fetchData = async () => {
 
+       const loggedInUser = localStorage.getItem("role");
+       console.log('User state value is ' + loggedInUser);
+
         if(typeof(loggedInUser) == 'undefined' || loggedInUser == null){
           console.log('Type found is null')
           setBookings([]);
@@ -27,10 +30,6 @@ const THistory = () => {
         const paramdict = {
           "username":loggedInUser
         }
-
-      const paramdict = {
-        "username": loggedInUser
-      }
 
       try {
         const config = {

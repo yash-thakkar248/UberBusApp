@@ -171,6 +171,14 @@ const TBook = () => {
         'ticketTo': item.destination,
         'ticketDate': item.datetime
       }
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paramdict)
+      }
       const response = await fetch("http://34.231.3.26:5000/insertBook", config);
       //const json = await response.json()
       if (response.ok) {
